@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RegionGroup.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CSDSHW7</a> &gt; <a href="index.source.html" class="el_package">edu.cwru.srw89.map</a> &gt; <span class="el_source">RegionGroup.java</span></div><h1>RegionGroup.java</h1><pre class="source lang-java linenums">package edu.cwru.srw89.map;
+
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+/*
+    Class: RegionGroup
+
+    author: Simon Wang
+    date: December 1, 2020
+
+    Routines to add regions to the region group, check the points with the regions
+ */
+
+<span class="fc" id="L16">public class RegionGroup {</span>
+<span class="fc" id="L17">    Set&lt;Region&gt; RegionSet = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L18">    private final LogClass log = new LogClass();</span>
+
+    /**
+     * Adds a region into the group of regions
+     * @param region region being added to the group
+     * @return True if the region was added successfuly. False if the region intersects antoher region, or if the region
+     * is null
+     */
+    public boolean addRegion(Region region) {
+<span class="pc bpc" id="L27" title="1 of 2 branches missed.">        if (Objects.nonNull(region)) {</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">            if (!RegionSet.isEmpty()) {</span>
+<span class="nc bnc" id="L29" title="All 2 branches missed.">                if (!checkIntersect(region)) {</span>
+<span class="nc" id="L30">                    return RegionSet.add(region);</span>
+                } else { //if - the region being added intersects any existing region
+<span class="nc" id="L32">                    log.log(&quot;Region intersected with another region: failed to add region. ADDREGION in REGIONGROUP&quot;);</span>
+<span class="nc" id="L33">                    return false;</span>
+                }
+            } else { //if - the set of regions is empty
+<span class="fc" id="L36">                RegionSet.add(region);</span>
+            }
+        } //if - region being added was null
+<span class="fc" id="L39">        log.log(&quot;Object was null. ADDREGION in REGIONGROUP&quot;);</span>
+<span class="fc" id="L40">        throw new IllegalArgumentException(&quot;Region being added was null&quot;);</span>
+    }
+
+    /**
+     * Helper Method. Checks whether the region intersects another region in the region group
+     * @param check Region to be checked
+     * @return True if the region does not intersect, false if the region does
+     */
+    private boolean checkIntersect(Region check) {
+<span class="nc" id="L49">        boolean output = false;</span>
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (Objects.nonNull(check)) {</span>
+<span class="nc bnc" id="L51" title="All 2 branches missed.">            for (Region r : RegionSet) {</span>
+                //checks if any corner of the region intersects with the set of existing region
+<span class="nc bnc" id="L53" title="All 2 branches missed.">                if (!checkPoints(check, r)) {</span>
+<span class="nc" id="L54">                    output = true;</span>
+                } //checks whether the region intersects the other region
+<span class="nc" id="L56">            } //for - each region in the set</span>
+<span class="nc" id="L57">            return output;</span>
+        } //if - object is null
+<span class="nc" id="L59">        log.log(&quot;Object was null. checkIntersect in REGIONGROUP&quot;);</span>
+<span class="nc" id="L60">        return false;</span>
+    }
+
+    /**
+     * Helper Method. Checks if the any of the corners fo the region being added are within the area of the original region
+     * @param added region being added, with its points being checked
+     * @param origin original region having being a point of reference
+     * @return True if any of the points of the added region lie within the original region
+     */
+    private boolean checkPoints(Region added, Region origin) {
+<span class="nc bnc" id="L70" title="All 8 branches missed.">        return checkXBounds(added.getXMAX(), origin) || checkXBounds(added.getXMIN(), origin) || checkYBounds(added.getYMIN(), origin) || checkYBounds(added.getYMAX(), origin);</span>
+    }
+
+    /**
+     * Helper Method. Checks if the Y coordinates lie within the region
+     * @param y Y-Coordinate
+     * @param r Region being checked in
+     * @return True if the coordinate lies within the region, false if not.
+     */
+    private boolean checkYBounds(double y, Region r) {
+<span class="nc bnc" id="L80" title="All 4 branches missed.">        return y &gt;= r.getYMIN() &amp;&amp; y &lt;= r.getYMAX();</span>
+    }
+
+    /**
+     * Helper Method. Checks if the X coordinates lie within the region
+     * @param x X-Coordinate
+     * @param r Region being checked in
+     * @return True if the coordinate lies within the region, false if not.
+     */
+    private boolean checkXBounds(double x, Region r) {
+<span class="nc bnc" id="L90" title="All 4 branches missed.">        return x &gt;= r.getXMIN() &amp;&amp; x &lt;= r.getXMAX();</span>
+    }
+
+    /**
+     * Helper Method. Checks whether the X and Y coordinates lie within the region
+     * @param x X-coordinate
+     * @param y Y-coordinate
+     * @param r Region being checked
+     * @return True if the coordinates lie within the region, false if not.
+     */
+    private boolean checkBounds(double x, double y, Region r) {
+<span class="nc bnc" id="L101" title="All 4 branches missed.">        return checkXBounds(x, r) &amp;&amp; checkYBounds(y, r);</span>
+    }
+
+    /**
+     * Getter Method. Returns the group of regions.
+     * @return Set of regions
+     */
+    Set&lt;Region&gt; getRegionSet() {
+<span class="nc" id="L109">        return RegionSet;</span>
+    }
+
+    /**
+     * toString Method. Returns a string representation of the region group
+     * @return String Representation: &quot;Region (NUMBER): LISTOFREGION&quot;
+     */
+    @Override
+    public String toString() {
+<span class="nc" id="L118">        StringBuilder output = new StringBuilder();</span>
+<span class="nc" id="L119">        int count = 1;</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">        for (Region r: RegionSet) {</span>
+<span class="nc" id="L121">            output.append(&quot;Regions (&quot;).append(count).append(&quot;): \n&quot;).append(r.toString()).append(&quot; &quot;);</span>
+<span class="nc" id="L122">            count++;</span>
+<span class="nc" id="L123">        }</span>
+<span class="nc" id="L124">        return output.toString();</span>
+    }
+
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

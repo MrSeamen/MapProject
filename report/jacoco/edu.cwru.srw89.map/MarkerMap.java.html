@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MarkerMap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CSDSHW7</a> &gt; <a href="index.source.html" class="el_package">edu.cwru.srw89.map</a> &gt; <span class="el_source">MarkerMap.java</span></div><h1>MarkerMap.java</h1><pre class="source lang-java linenums">package edu.cwru.srw89.map;
+
+import java.awt.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+
+/*
+    Class: MarkerMap
+
+    author: Simon Wang
+    date: December 1, 2020
+
+    Routines to add regions to the local region group, and to insert markers into the regions of the region group
+ */
+
+public class MarkerMap implements RegionShape{
+<span class="fc" id="L19">    public enum Points { OIL, ALIEN, OTHER }; //Available Point types to be used for Markers</span>
+<span class="fc" id="L20">    private Set&lt;Marker&gt; listOfValidPoints = new HashSet&lt;&gt;(); //Set of all the points correctly inserted</span>
+<span class="fc" id="L21">    private final LogClass log = new LogClass(); //logger</span>
+    RegionGroup regionGroup; //Group of Regions
+
+<span class="fc" id="L24">    MarkerMap() {</span>
+<span class="fc" id="L25">        regionGroup = new RegionGroup();</span>
+<span class="fc" id="L26">    }</span>
+<span class="fc" id="L27">    MarkerMap(RegionGroup region) {regionGroup = region;}</span>
+
+    /**
+     * Adds a new region of the shape dimensions to the region group
+     * @param shape Shape Object that the region is being made from
+     * @return True if shape is correctly added, false if not
+     */
+    boolean addRegion(Shape shape) {
+<span class="nc" id="L35">        return regionGroup.addRegion(new Region(shape));</span>
+    }
+
+    /**
+     * Adds a new region of the shape dimensions to the region group
+     * @param region Shape Object that the region is being made from
+     * @return True if shape is correctly added, false if not
+     */
+    boolean addRegion(Region region) {
+<span class="nc" id="L44">        return regionGroup.addRegion(region);</span>
+    }
+
+    /**
+     * Inserts a Marker Object into the region
+     * @param marker Marker being inserted into the region
+     * @return True if the marker's coordinates exist in the region and if there isn't already an existing marker in
+     * the coordinates. False if not, or if the object is null.
+     */
+    @Override
+    public boolean insert(Marker marker) {
+<span class="nc bnc" id="L55" title="All 2 branches missed.">        if (Objects.nonNull(marker)) {</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">            for (Region region : regionGroup.getRegionSet()) {</span>
+<span class="nc bnc" id="L57" title="All 2 branches missed.">                if (region.isInMap(marker.getxCoord(), marker.getyCoord())) {</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">                    if (!checkForObject(marker.getxCoord(), marker.getyCoord())) {</span>
+<span class="nc" id="L59">                        listOfValidPoints.add(marker);</span>
+                    } else { //if - checking if there already exists a marker in the coordinates
+<span class="nc" id="L61">                        log.log(&quot;Object already exists in position, cannot insert over object. INSERT IN REGION&quot;);</span>
+                    }
+                } else { //if - checking if marker's coordinates are in region
+<span class="nc" id="L64">                    log.log(&quot;Coordinates are invalid: not within the region. INSERT IN REGION&quot;);</span>
+                }
+<span class="nc" id="L66">            } //for - looping through the regions to find matching region</span>
+        } else { //if - checking of object is null
+<span class="nc" id="L68">            log.log(&quot;Marker was null, could not be Inserted. INSERT IN REGION&quot;);</span>
+<span class="nc" id="L69">            throw new IllegalArgumentException(&quot;Marker was null.&quot;);</span>
+        }
+        //double checks whether the point was actually inserted
+<span class="nc" id="L72">        return doubleCheck(marker.getxCoord(), marker.getyCoord(), marker);</span>
+    }
+
+    /**
+     * Inserts all the markers of the collection into the region
+     * @param c Collection of markers being inserted into hte region
+     * @return True if ALL the markers were inserted correctly. False if any one of the inserts fails, or if the collection is null.
+     */
+    public boolean insertAll(Collection&lt;Marker&gt; c) {
+<span class="nc" id="L81">        boolean output = true;</span>
+<span class="nc bnc" id="L82" title="All 2 branches missed.">        if (Objects.nonNull(c)) {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            for (Marker marker : c) {</span>
+                //if inserting fails
+<span class="nc bnc" id="L85" title="All 2 branches missed.">                if (!insert(marker)) {</span>
+<span class="nc" id="L86">                    output = false;</span>
+                } //no else because only looking for one instance of a failure of the insert method
+<span class="nc" id="L88">            }//for - looping through the collection of markers and calling insert</span>
+<span class="nc" id="L89">            return output;</span>
+        } else { //if - checking if object is null
+<span class="nc" id="L91">            log.log(&quot;Collection was null, unable to insert null objects. INSERTALL IN REGION&quot;);</span>
+<span class="nc" id="L92">            throw new IllegalArgumentException(&quot;Collection cannot be null.&quot;);</span>
+        }
+    }
+
+    /**
+     * Counts the number of markers in the region with the specified type
+     * @param type Type of marker being accounted for
+     * @return Number of markers of the type specified
+     */
+    public int count(MarkerMap.Points type) {
+<span class="nc" id="L102">        int count = 0; //count number that actually checks through the list</span>
+<span class="nc bnc" id="L103" title="All 2 branches missed.">        for (Marker m : listOfValidPoints) {</span>
+            //actually checking whether the points of the marker are in the map and equal the type
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            for (Region region : regionGroup.getRegionSet()) {</span>
+<span class="nc bnc" id="L106" title="All 2 branches missed.">                if (region.isInMap(m.getxCoord(), m.getyCoord())) {</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">                    if (m.getType().equals(type)) { //if - checks if the marker type equals the type being accounted for</span>
+<span class="nc" id="L108">                        count++;</span>
+                    }//No need for else because it will not do anything if it does not find the object of right type
+                } else {//if - marker's coordinates are contained by the region
+<span class="nc" id="L111">                    log.log(&quot;Coordinates entered were out of bounds. COUNT IN REGION&quot;);</span>
+                }
+<span class="nc" id="L113">            } //for - loops through the regions to find one that matches</span>
+<span class="nc" id="L114">        } //for - loops through all the markers</span>
+<span class="nc" id="L115">        return count;</span>
+    }
+
+    /**
+     * Inserts a Marker into the region, using the parameters of a marker.
+     * @param type Type of the Marker
+     * @param x X-coordinate of the Marker
+     * @param y Y-coordinate of the Marker
+     * @return True if the marker's coordinates exist in the region and if there isn't already an existing marker in
+     * the coordinates. False if not, or if the object is null.
+     */
+    @Override
+    public boolean insert(MarkerMap.Points type, double x, double y) {
+<span class="nc" id="L128">        Marker point = new Marker(type, x, y); //Creates a new marker with the specifications</span>
+<span class="nc" id="L129">        return insert(point);</span>
+    }
+
+    /**
+     * Helper method. Double checks whether the marker located on the map equals the marker specified
+     * @param x Xcoordinate being checked
+     * @param y Ycoordinate being checked
+     * @param point Marker being checked
+     * @return True if marker equals the point, false if not
+     */
+    boolean doubleCheck(double x, double y, Marker point) {
+<span class="nc" id="L140">        return (point(x,y).equals(point));</span>
+    }
+
+    /**
+     * Finds the point located at the coordinates at ( x, y)
+     * @param x X-Coordinates of the point being looked for
+     * @param y Y-Coordinates of the point being looked for
+     * @return Marker object with coordinates at ( x, y), null if point is not within any of the regions
+     */
+    public Marker point(double x, double y) {
+        //looping through the regions and checking the coordinates is an extra way of double checking whether the point
+        //exists in the region
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        for (Region region : regionGroup.getRegionSet()) {</span>
+<span class="nc bnc" id="L153" title="All 2 branches missed.">            if (region.isInMap(x, y)) {</span>
+<span class="nc bnc" id="L154" title="All 2 branches missed.">                for (Marker m : listOfValidPoints) {</span>
+                    //checking matching coordinates between the marker and parameter
+<span class="nc bnc" id="L156" title="All 4 branches missed.">                    if (m.getxCoord() == x &amp;&amp; m.getyCoord() == y) {</span>
+<span class="nc" id="L157">                        return m;</span>
+                    } //no else becasue it moves onto the next marker
+<span class="nc" id="L159">                } //for - loops through the markers</span>
+<span class="nc" id="L160">                log.log(&quot;Coordinates do not match point found. POINT IN REGION&quot;);</span>
+            } else {//if - checks whether the coordinates are within the region
+<span class="nc" id="L162">                log.log(&quot;Coordinates are invalid: not within the region. POINT IN REGION&quot;);</span>
+            }
+<span class="nc" id="L164">        } //for - loops through the region to find one that matches</span>
+<span class="nc" id="L165">        log.log(&quot;Point does not exist in region. POINT IN REGION&quot;);</span>
+<span class="nc" id="L166">        throw new IllegalArgumentException(&quot;Coordinates point to a nonexistent marker in the region.&quot;);</span>
+    }
+
+    /**
+     * Helper method. Checks for whether there is a marker with the coordinates specified.
+     * @param x X-coordinate
+     * @param y Y-coordinate
+     * @return True if there is a marker that already exists with the specified coordinates, false if not
+     */
+    boolean checkForObject(double x, double y) {
+<span class="nc bnc" id="L176" title="All 2 branches missed.">        for (Marker marker : listOfValidPoints) {</span>
+<span class="nc bnc" id="L177" title="All 4 branches missed.">            if (marker.getxCoord() == x &amp;&amp; marker.getyCoord() == y) { //if statement because dont want to return on immediately</span>
+<span class="nc" id="L178">                return true;</span>
+            } //no else because only checking if there is one
+<span class="nc" id="L180">        } // for - loops through the markers</span>
+<span class="nc" id="L181">        return false;</span>
+    }
+
+    /**
+     * Getter Method. Returns the list of points that exist within the region
+     * @return List of existing points
+     */
+    public Set&lt;Marker&gt; getListOfValidPoints() {
+<span class="nc" id="L189">        return listOfValidPoints;</span>
+    }
+
+    @Override
+    public String toString() {
+<span class="nc" id="L194">        String output = &quot;&quot;;</span>
+<span class="nc" id="L195">        int count = 1;</span>
+<span class="nc bnc" id="L196" title="All 2 branches missed.">        for (Region region : regionGroup.getRegionSet()) {</span>
+<span class="nc" id="L197">            output += &quot;Region (&quot; + count + &quot;): &quot; + region.toString() + &quot;n/ Points: &quot;;</span>
+<span class="nc bnc" id="L198" title="All 2 branches missed.">            for (Marker marker : listOfValidPoints) {</span>
+<span class="nc bnc" id="L199" title="All 2 branches missed.">                if (region.isInMap(marker.getxCoord(), marker.getyCoord())) {</span>
+<span class="nc" id="L200">                    output += marker.toString() + &quot; | &quot;;</span>
+                } //if - marker is in the region selected
+<span class="nc" id="L202">            } //for - each marker in the list</span>
+<span class="nc" id="L203">        } //for - each region in the set</span>
+<span class="nc" id="L204">        return output;</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Marker.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CSDSHW7</a> &gt; <a href="index.source.html" class="el_package">edu.cwru.srw89.map</a> &gt; <span class="el_source">Marker.java</span></div><h1>Marker.java</h1><pre class="source lang-java linenums">package edu.cwru.srw89.map;
+
+import java.util.Objects;
+
+/*
+    Class: Marker
+
+    author: Simon Wang
+    date: December 1, 2020
+
+    Marker Object to hold the marker type, and coordinates
+ */
+
+<span class="pc bpc" id="L14" title="1 of 2 branches missed.">public class Marker {</span>
+    final private MarkerMap.Points type;
+    final private double xCoord;
+    final private double yCoord;
+
+    /**
+     * Makes a Marker Object that holds a MarkerMap.Points as an identification type, and two doubles to represent
+     * the &quot;Coordinates&quot; of the Marker
+     * @param type Designated type of marker
+     * @param xCoord X-Coordinate of the object
+     * @param yCoord Y-Coordinate of the object
+     */
+<span class="fc" id="L26">    Marker(MarkerMap.Points type, double xCoord, double yCoord) {</span>
+        //boundaries and type check are checked in the insert method
+<span class="pc bpc" id="L28" title="2 of 4 branches missed.">        assert Objects.nonNull(type) : &quot;Type of Object cannot be null&quot;;</span>
+<span class="fc" id="L29">        this.type = type;</span>
+<span class="fc" id="L30">        this.xCoord = xCoord;</span>
+<span class="fc" id="L31">        this.yCoord = yCoord;</span>
+<span class="fc" id="L32">    }</span>
+
+    /**
+     * Getter Method
+     * @return Type of Marker Object
+     */
+    MarkerMap.Points getType() {
+<span class="fc" id="L39">        return type;</span>
+    }
+
+    /**
+     * Getter Method
+     * @return X-coordinate of Marker Object
+     */
+    double getxCoord() {
+<span class="fc" id="L47">        return xCoord;</span>
+    }
+
+    /**
+     * Getter Method
+     * @return Y-coordinate of Marker Object
+     */
+    double getyCoord() {
+<span class="fc" id="L55">        return yCoord;</span>
+    }
+
+    /**
+     * toString Method. Returns a String representation of the Marker.
+     * @return String Representation: &quot;Type: MARKERTYPE | Coordinates: ( XCOORDINATE, YCOORDINATE)&quot;
+     */
+    @Override
+    public String toString() {
+<span class="nc" id="L64">        return &quot;Type: &quot; + type + &quot; | Coordinates: ( &quot; + xCoord + &quot;, &quot; + yCoord + &quot;)&quot;;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>

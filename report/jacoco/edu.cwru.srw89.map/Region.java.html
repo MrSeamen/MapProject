@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Region.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CSDSHW7</a> &gt; <a href="index.source.html" class="el_package">edu.cwru.srw89.map</a> &gt; <span class="el_source">Region.java</span></div><h1>Region.java</h1><pre class="source lang-java linenums">package edu.cwru.srw89.map;
+
+import java.awt.*;
+
+/*
+    Class: Region
+
+    author: Simon Wang
+    date: December 1, 2020
+
+    Routines to insert the marker into the region, and to count the markers of the region of a specific type, and to
+    check point coordinates within the region
+ */
+
+class Region {
+    private final int XMIN, XMAX, YMIN, YMAX;
+    private Shape Map;
+
+
+    /**
+     * Constructs a region object that holds the perimeter of the Shape Object
+     * @param shape Shape Object that gives the coordinates and perimeter of the shape
+     */
+<span class="fc" id="L24">    Region(Shape shape) {</span>
+<span class="fc" id="L25">        Map = shape;</span>
+<span class="fc" id="L26">        XMIN = (int)shape.getBounds().getMinX();</span>
+<span class="fc" id="L27">        XMAX = (int)shape.getBounds().getMaxX();</span>
+<span class="fc" id="L28">        YMIN = (int)shape.getBounds().getMinY();</span>
+<span class="fc" id="L29">        YMAX = (int)shape.getBounds().getMaxY();</span>
+<span class="fc" id="L30">    }</span>
+
+    /**
+     * Getter Method. Returns the left most X-coordinate
+     * @return Left most X-coordinate
+     */
+    int getXMIN() {
+<span class="nc" id="L37">        return XMIN;</span>
+    }
+
+    /**
+     * Getter Method. Returns the right most X-coordinate
+     * @return Right most X-coordinate
+     */
+    int getXMAX() {
+<span class="nc" id="L45">        return XMAX;</span>
+    }
+
+    /**
+     * Getter Method. Returns the bottom most Y-coordinate
+     * @return Bottom most Y-coordinate
+     */
+    int getYMIN() {
+<span class="nc" id="L53">        return YMIN;</span>
+    }
+
+    /**
+     * Getter Method. Returns the upper most Y-coordinate
+     * @return Upper most Y-coordinate
+     */
+    int getYMAX() {
+<span class="nc" id="L61">        return YMAX;</span>
+    }
+
+    /**
+     * Getter Method. Returns the shape object of the region
+     * @return Map perimeter of the region
+     */
+    public Shape getMap() {
+<span class="fc" id="L69">        return Map;</span>
+    }
+
+    /**
+     * toString Method. Returns a String representation of the Region.
+     * @return String Representation: &quot;Boundaries : ( XMIN, YMIN), ( XMAX, YMIN), ( XMIN, YMAX), ( XMAX, YMAX)
+     *                                 Points: LISTOFMARKERS&quot;
+     */
+    @Override
+    public String toString() {
+<span class="nc" id="L79">        StringBuilder output = new StringBuilder(&quot;Boundaries : (&quot; + getXMIN() + &quot;, &quot; + getYMIN() + &quot;), (&quot; + getXMAX() + &quot;, &quot; + getYMIN() + &quot;), (&quot;</span>
+<span class="nc" id="L80">                + getXMIN() + &quot;, &quot; + getYMAX() + &quot;), (&quot; + getXMAX() + &quot;, &quot; + getYMAX() + &quot;)&quot;);</span>
+<span class="nc" id="L81">        return output.toString();</span>
+    }
+
+    /**
+     * Helper method. Checks for whether the coordinate is within the region.
+     * @param x X-coordinate
+     * @param y Y-coordinate
+     * @return True if coordinate is within the region, False if not
+     */
+    boolean isInMap(double x, double y) {
+<span class="pc bpc" id="L91" title="2 of 8 branches missed.">        return x &gt;= XMIN &amp;&amp; x &lt;= XMAX &amp;&amp; y &gt;= YMIN &amp;&amp; y &lt;=YMAX;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span></div></body></html>
